@@ -1,1 +1,180 @@
+import random as rd
 
+funcionarios_de_folga = []
+
+class Funcionario:
+    def __init__(self, nome):
+        self.nome = nome
+        self.turnos_trabalhados = 0
+        self.cansado = False
+        self.turnos_descansados = 0
+
+    def trabalhar(self):
+        self.turnos_trabalhados += 1
+        if self.turnos_trabalhados == 2:
+            self.cansado = True
+
+class Validador:
+    def funcionario_cansado(self, funcionario):
+        return funcionario.cansado
+
+class Individuo:
+    def __init__(self):
+        self.escala = []
+        self.fitness = 0
+
+    def definir_funcionario_da_escala(self, habilidades):
+        # Verifica os funcionários que não estão cansados
+        disponiveis = []
+        for funcionario in habilidades:
+            if not validador.funcionario_cansado(funcionario):
+                disponiveis.append(funcionario)
+
+        # Escolhe um disponível, ou qualquer um se todos estiverem cansados
+        if len(disponiveis) > 0:
+            funcionario_sorteado = rd.choice(disponiveis)
+        else:
+            funcionario_sorteado = rd.choice(habilidades)
+
+
+    
+        # Adiciona à lista de folga, se necessário
+        if funcionario_sorteado.cansado and funcionario_sorteado not in funcionarios_de_folga:
+            funcionarios_de_folga.append(funcionario_sorteado)
+    
+        funcionario_sorteado.trabalhar()
+    
+        return funcionario_sorteado
+
+
+    def criar_individuo(self):
+        for i in range(21):  # 21 turnos
+            linha_funcionarios = [
+                self.definir_funcionario_da_escala(recepcao),
+                self.definir_funcionario_da_escala(bar),
+                self.definir_funcionario_da_escala(limpeza_de_quartos),
+                self.definir_funcionario_da_escala(cozinha),
+                self.definir_funcionario_da_escala(lavanderia),
+                self.definir_funcionario_da_escala(manutencao),
+                self.definir_funcionario_da_escala(servico_de_quarto),
+            ]
+
+            self.escala.append(linha_funcionarios)
+
+            for funcionario in funcionarios_de_folga[:]:
+                funcionario.turnos_descansados += 1
+                if funcionario.turnos_descansados == 3:
+                    funcionario.turnos_trabalhados = 0
+                    funcionario.turnos_descansados = 0
+                    funcionario.cansado = False
+                    funcionarios_de_folga.remove(funcionario)
+        return self
+
+    def exibir_escala(self):
+        print("\n========== ESCALA DE TRABALHO (FORMATO MATRIZ) ==========\n")
+        cabecalho = "Turno |"
+        for i in range(1, 8):
+            cabecalho += f" Setor {i}       |"
+        print(cabecalho)
+        print("-" * len(cabecalho))
+
+        for dia, turno in enumerate(self.escala):
+            linha = f"{str(dia+1).zfill(2)}    |"
+            for funcionario in turno:
+                nome_formatado = funcionario.nome[:12]
+                linha += f" {nome_formatado:<12}|"
+            print(linha)
+
+    def setFitness(self):
+        elementos = [item for linha in self.escala for item in linha]
+        elementos_unicos = set(elementos)
+        return len(elementos_unicos)
+
+    def selecao(self):
+
+        
+        #selecao por torneio; seleciona 5 individuos
+        populacaoSelecionada = []
+        populacao = self.populacao
+        numeros = rd.sample(range(0, len(populacao)), 5)
+        for i in range(len(numeros)):
+            populacaoSelecionada.append(populacao[numeros[i]])   
+            
+            print("Pop selecionada", populacaoSelecionada)#tirar essa linha dps de confirmar que funciona
+
+        for i in range(2):  # pegando os três melhores
+            melhor = max(populacaoSelecionada, key=lambda x: x.fitness)
+            populacaoFinal.append(melhor)
+            populacaoSelecionada.remove(melhor)
+            
+            print("Pop final", populacaoFinal)#tirar essa linha dps de confirmar que funciona
+            
+        return populacaoFinal
+
+
+class Populacao:
+    def __init__(self, tamanho_populacao=10):
+        self.tamanho_populacao = tamanho_populacao
+        self.individuos = []
+        self.fitness = 0
+
+    def inicializacao(self):
+        for i in range(self.tamanho_populacao):
+            individuo = Individuo()
+            self.individuos.append(individuo.criar_individuo())
+            individuo.fitness = individuo.setFitness
+            print(individuo.fitness())
+
+    def exibir_populacao(self):
+        print("\nPopulação:")
+        for individuo in self.individuos:
+            individuo.exibir_escala()
+
+    def selecao(self):
+        individuos_aleatorios = []
+        
+        individuo_sorteado = rd.choice(self.individuos)
+        individuos_aleatorios.append(individuo_sorteado)
+
+        individuo_sorteado = rd.choice(self.individuos)
+        individuos_aleatorios.append(individuo_sorteado)
+
+
+# Criação de funcionários
+joao = Funcionario("João")
+maria = Funcionario("Maria")
+ana = Funcionario("Ana")
+carlos = Funcionario("Carlos")
+bruno = Funcionario("Bruno")
+paula = Funcionario("Paula")
+pedro = Funcionario("Pedro")
+luiza = Funcionario("Luiza")
+thiago = Funcionario("Thiago")
+fernanda = Funcionario("Fernanda")
+rafael = Funcionario("Rafael")
+juliana = Funcionario("Juliana")
+caio = Funcionario("Caio")
+beatriz = Funcionario("Beatriz")
+lucas = Funcionario("Lucas")
+bruna = Funcionario("Bruna")
+marcelo = Funcionario("Marcelo")
+vanessa = Funcionario("Vanessa")
+danilo = Funcionario("Danilo")
+renata = Funcionario("Renata")
+
+# Habilidades
+recepcao = [joao, ana, paula, fernanda, juliana, beatriz, marcelo, renata]
+bar = [maria, paula, thiago, rafael, lucas, vanessa, renata]
+limpeza_de_quartos = [joao, carlos, paula, pedro, luiza, juliana, caio, beatriz, lucas, marcelo, danilo]
+cozinha = [maria, bruno, thiago, rafael, bruna, vanessa]
+lavanderia = [ana, luiza, fernanda, marcelo]
+manutencao = [carlos, pedro, caio, lucas, danilo]
+servico_de_quarto = [maria, bruno, fernanda, rafael, beatriz, bruna, renata]
+
+# Instância e execução
+validador = Validador()
+populacao = Populacao()
+populacao.inicializacao()
+populacao.exibir_populacao()
+
+print("\nTamanho da população:", len(populacao.individuos))
